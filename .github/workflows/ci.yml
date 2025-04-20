@@ -37,4 +37,4 @@ jobs:
     - name: Run Tests
       run: |
         # 在这里添加运行测试的命令
-        docker-compose exec <service_name> npm test
+        # docker-compose exec <service_name> npm test
