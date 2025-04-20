@@ -1,0 +1,37 @@
+services:
+  frontend-builder:
+    build:
+      context: ./app
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./app/dist:/app/dist
+
+  nginx:
+    image: nginx:alpine
+    volumes:
+      - ./app/nginx.conf:/etc/nginx/conf.d/default.conf
+      - ./app/dist:/usr/share/nginx/html
+    ports:
+      - "80:80"
+
+  backend:
+    build:
+      context: ./server  
+      dockerfile: Dockerfile 
+    ports:
+      - "8080:8080"
+    command: npm run dev
+    environment:
+      - MONGO_URL=mongodb://mongo:27017/finance
+    depends_on:
+      - mongo
+
+  mongo:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db  # 持久化数据
+
+volumes:
+  mongo-data:
